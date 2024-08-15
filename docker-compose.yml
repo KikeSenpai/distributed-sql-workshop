@@ -1,8 +1,7 @@
 services:
   trino-coordinator:
-    image: trinodb/trino:422
+    image: trinodb/trino:453
     hostname: trino-coordinator
-    container_name: trino-coordinator
     ports:
       - "8080:8080"
     volumes:
@@ -13,7 +12,6 @@ services:
   mariadb:
     image: mariadb:10.3.32
     hostname: mariadb
-    container_name: mariadb
     ports:
       - "3306:3306"
     environment:
@@ -27,7 +25,6 @@ services:
   hive-metastore:
     image: bitsondatadev/hive-metastore:latest
     hostname: hive-metastore
-    container_name: hive-metastore
     platform: linux/amd64
     ports:
       - "9083:9083"
@@ -49,21 +46,38 @@ services:
       - "9002:9000"
       - "9001:9001"
     environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123
       MINIO_ACCESS_KEY: minio
       MINIO_SECRET_KEY: minio123
-    command: server --console-address ":9001" /data
+    command: [ "server", "/data", "--console-address", ":9001" ]
+    volumes:
+      - minio-data:/data
     networks:
       - trino-network
 
-  create-buckets:
+  mc:
     image: minio/mc
-    container_name: create-buckets
+    container_name: mc
+    entrypoint: >
+      /bin/sh -c "
+      until (/usr/bin/mc config host add minio http://minio:9000 minio minio123) do echo '...waiting...' && sleep 1; done;
+      /usr/bin/mc mb minio/problems;
+      /usr/bin/mc policy set public minio/problems;
+      /usr/bin/mc cp /data/hackers.parquet minio/problems/hackers/hackers.parquet;
+      /usr/bin/mc cp /data/submissions.parquet minio/problems/submissions/submissions.parquet;
+      exit 0;
+      "
     depends_on:
       - minio
-    entrypoint: >
-      /bin/sh -c " /usr/bin/mc config host add myminio http://minio:9002 minio minio123; /usr/bin/mc rm -r --force myminio/tpch myminio/warehouse myminio/icebergwarehouse; /usr/bin/mc mb myminio/tpch myminio/warehouse myminio/icebergwarehouse; /usr/bin/mc policy download myminio/tpch myminio/warehouse myminio/icebergwarehouse; exit 0; "
+    volumes:
+      - ./data/:/data/
     networks:
       - trino-network
+
+volumes:
+  minio-data:
+    driver: local
 
 networks:
   trino-network:

@@ -9,7 +9,7 @@ SQL exercises to learn how distributed databases work.
 - User = `user`.
 - Leave password empty.
 
-## Enter MINIO credentials
+## Access MINIO UI
 
 - To access the Minio UI, go to `http://localhost:9001/`.
 - User: `minio`.
@@ -19,4 +19,9 @@ SQL exercises to learn how distributed databases work.
 
 - To access the Trino UI, go to `http://localhost:8080/ui/`.
 - Enter any username, no password required.
+
+## Setup Schema
+
+- Run all the SQL statements in the `setup_trino.sql` file to create the schema and the tables for Trino.
+- Run all the SQL statements in the `setup_postgres.sql` file to create the schema and the tables for Postgres.
 
