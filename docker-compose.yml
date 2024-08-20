@@ -66,14 +66,27 @@ services:
       /usr/bin/mc policy set public minio/problems;
       /usr/bin/mc cp /data/hackers.parquet minio/problems/hackers/hackers.parquet;
       /usr/bin/mc cp /data/submissions.parquet minio/problems/submissions/submissions.parquet;
+      /usr/bin/mc cp /data/user_actions.parquet minio/problems/user_actions/user_actions.parquet;
+      /usr/bin/mc cp /data/users.parquet minio/problems/users/users.parquet;
       exit 0;
       "
     depends_on:
       - minio
     volumes:
-      - ./data/:/data/
+      - ./data/parquet/:/data/
     networks:
       - trino-network
+
+  postgres:
+    image: postgres:16.1
+    environment:
+      POSTGRES_DB: problems
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/csv/:/data/
 
 volumes:
   minio-data:
