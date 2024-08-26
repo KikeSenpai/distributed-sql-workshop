@@ -3,8 +3,8 @@ WITH
         SELECT
             user_id
             , country
-            , MIN(event_ts) first_login_ts
-            , MAX(event_ts) last_login_ts
+            , min(event_ts) first_login_ts
+            , max(event_ts) last_login_ts
         FROM user_actions
         WHERE
             cast(from_unixtime(event_ts) AS DATE) = cast('2022-01-07' AS DATE)

@@ -48,3 +48,34 @@ COPY problems.public.users (user_id, country, first_login_ts, last_login_ts, use
     FROM '/data/users.csv'
     DELIMITER ','
     CSV HEADER;
+
+-- One Big Table Design
+CREATE TABLE IF NOT EXISTS problems.public.posts (
+    post_id        INT PRIMARY KEY,
+    user_id        INT,
+    post_content   TEXT,
+    post_time      TIMESTAMP,
+    start_time     TIMESTAMP,
+    end_time       TIMESTAMP,
+    is_deleted     BOOLEAN,
+    is_current     BOOLEAN,
+    partition_date DATE
+);
+
+COPY problems.public.posts (post_id, user_id, post_content, post_time, start_time, end_time, is_deleted, is_current,
+                            partition_date)
+    FROM '/data/posts.csv'
+    DELIMITER ','
+    CSV HEADER;
+
+CREATE TABLE IF NOT EXISTS problems.public.post_actions (
+    action_id   UUID PRIMARY KEY,
+    post_id     INT,
+    action      VARCHAR(50),
+    action_time TIMESTAMP
+);
+
+COPY problems.public.post_actions (action_id, post_id, action, action_time)
+    FROM '/data/post_actions.csv'
+    DELIMITER ','
+    CSV HEADER;
