@@ -68,6 +68,8 @@ services:
       /usr/bin/mc cp /data/submissions.parquet minio/problems/submissions/submissions.parquet;
       /usr/bin/mc cp /data/user_actions.parquet minio/problems/user_actions/user_actions.parquet;
       /usr/bin/mc cp /data/users.parquet minio/problems/users/users.parquet;
+      /usr/bin/mc cp /data/posts.parquet minio/problems/posts/posts.parquet;
+      /usr/bin/mc cp /data/post_actions.parquet minio/problems/post_actions/post_actions.parquet;
       exit 0;
       "
     depends_on:

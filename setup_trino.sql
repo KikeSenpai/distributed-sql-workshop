@@ -43,3 +43,29 @@ CREATE TABLE IF NOT EXISTS hive.problems.users (
     external_location = 's3a://problems/users/',
     format = 'PARQUET'
 );
+
+-- One Big Table Design
+CREATE TABLE IF NOT EXISTS hive.problems.posts (
+    post_id        INT,
+    user_id        INT,
+    post_content   VARCHAR,
+    post_time      TIMESTAMP,
+    start_time     TIMESTAMP,
+    end_time       TIMESTAMP,
+    is_deleted     BOOLEAN,
+    is_current     BOOLEAN,
+    partition_date DATE
+) WITH (
+    external_location = 's3a://problems/posts/',
+    format = 'PARQUET'
+);
+
+CREATE TABLE IF NOT EXISTS hive.problems.post_actions (
+    action_id   VARCHAR,
+    post_id     INT,
+    action      VARCHAR,
+    action_time TIMESTAMP
+) WITH (
+    external_location = 's3a://problems/post_actions/',
+    format = 'PARQUET'
+);
